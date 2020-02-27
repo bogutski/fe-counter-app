@@ -31,7 +31,7 @@ function Counter(props) {
           </div>
 
           <div className="col">
-            <button onClick={() => props.remove(props.id)}
+            <button onClick={() => props.remove(props.id, props.name)}
                     className='btn btn-danger'>Delete
             </button>
           </div>
