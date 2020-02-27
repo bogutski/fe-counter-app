@@ -2,15 +2,7 @@ import React, { useState } from 'react';
 import './App.css';
 import Counter from './Counter';
 import AddCounterForm from './AddCounterForm';
-import {
-  Button,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  FormGroup,
-  Input
-} from 'reactstrap';
+import ConfirmationDelete from './ConfirmationDelete';
 
 function App() {
 
@@ -22,10 +14,8 @@ function App() {
   ];
 
   const [counters, setCounters] = useState(InitialCountersState);
-  const [isOpenModalDeleteConfirmation, setIsOpenModalDeleteConfirmation] = useState(false);
-  const [confirmModalOriginName, setConfirmModalOriginName] = useState();
-  const [confirmModalOriginId, setConfirmModalOriginId] = useState();
-  const [isDisabledDeleteConfirmationButton, setIsDisabledDeleteConfirmationButton] = useState(true);
+  const [confirmCounter, setConfirmCounter] = useState({});
+
 
   const resetTotalCount = () => {
     console.log('resetTotalCount');
@@ -50,22 +40,18 @@ function App() {
     setCounters(newCounters);
   };
 
-  const confirmRemoveCounter = (id, name) => {
-    setIsOpenModalDeleteConfirmation(true);
-    setConfirmModalOriginName(name);
-    setConfirmModalOriginId(id);
+  const confirmRemoveCounter = counter => {
+    setConfirmCounter(counter);
   };
 
   const removeConfirmed = () => {
-    const newCounters = counters.filter(el => el.id !== confirmModalOriginId);
+    const newCounters = counters.filter(el => el.id !== confirmCounter.id);
     setCounters(newCounters);
-    setIsOpenModalDeleteConfirmation(false);
-    setIsDisabledDeleteConfirmationButton(true);
+    setConfirmCounter({});
   };
 
   const confirmDeleteCancel = () => {
-    setIsOpenModalDeleteConfirmation(false);
-    setIsDisabledDeleteConfirmationButton(true);
+    setConfirmCounter({})
   };
 
   const addCounter = (name, count) => {
@@ -77,10 +63,6 @@ function App() {
     setCounters(newCounters);
   };
 
-  const modalConfirmationUserInputChange = (e) => {
-    const inputText = e.target.value;
-    setIsDisabledDeleteConfirmationButton(inputText.trim().toLowerCase() !== confirmModalOriginName.trim().toLowerCase());
-  };
 
   return (
     <div className='container'>
@@ -95,52 +77,22 @@ function App() {
 
       {
         counters.map(el => <Counter key={el.id}
-                                    id={el.id}
-                                    name={el.name}
-                                    count={el.count}
+                                    counter={el}
                                     increment={incrementCounter}
                                     decrement={decrementCounter}
                                     remove={confirmRemoveCounter}
         />)
       }
 
-
       <hr />
 
       <AddCounterForm onSubmit={addCounter} />
 
-
-
-
-      <Modal isOpen={isOpenModalDeleteConfirmation} toggle={confirmDeleteCancel}>
-        <ModalHeader>Delete confirmation</ModalHeader>
-
-        <ModalBody>
-
-          <p>
-            Enter counter name <strong>{confirmModalOriginName}</strong> to
-            delete it
-          </p>
-
-          <FormGroup>
-            <Input type="email"
-                   name="email"
-                   id="exampleEmail"
-                   placeholder="with a placeholder"
-                   onChange={modalConfirmationUserInputChange}
-
-            />
-          </FormGroup>
-        </ModalBody>
-
-        <ModalFooter>
-          <Button color="danger"
-                  onClick={removeConfirmed}
-                  disabled={isDisabledDeleteConfirmationButton}>Delete</Button>{' '}
-          <Button color="secondary"
-                  onClick={confirmDeleteCancel}>Cancel</Button>
-        </ModalFooter>
-      </Modal>
+      <ConfirmationDelete
+        name={confirmCounter.name}
+        onSuccess={removeConfirmed}
+        onCancel={confirmDeleteCancel}
+      />
 
     </div>
   );
