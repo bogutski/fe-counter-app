@@ -13,16 +13,25 @@ function AddCounterForm(props) {
   };
 
   return (
-    <div>
+    <div className='row'>
 
-      <input type="text" name='name' value={name}
-             onChange={e => setName(e.target.value)} />
+      <div className="col">
+        <input type="text" name='name' value={name}
+               className='form-control'
+               onChange={e => setName(e.target.value)} />
+      </div>
 
-      <input type="number" name='count' value={count}
-             onChange={e => setCount(e.target.value)} />
+      <div className="col">
+        <input type="number" name='count' value={count}
+               className='form-control'
+               onChange={e => setCount(e.target.value)} />
+      </div>
 
-
-      <button onClick={() => onSubmit(name, count)}>Create</button>
+      <div className="col">
+        <button onClick={() => onSubmit(name, count)}
+                className='btn btn-outline-secondary'>Create
+        </button>
+      </div>
 
     </div>
   );
